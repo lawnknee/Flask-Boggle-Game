@@ -44,3 +44,22 @@ class BoggleAppTestCase(TestCase):
             self.assertIsInstance(json["gameId"], str)
             self.assertTrue(games)
 
+    def test_api_score_word(self):
+        """Testing verifying a word"""
+
+        with self.client as client:
+            response = client.get("/api/new-game")
+            game_id = response.json["gameId"]
+            game = games[game_id] # instance of the BoggleGame
+
+            game.board = [['L', 'T', 'E', 'F', 'U'], 
+                        ['L', 'O', 'I', 'T', 'H'], 
+                        ['R', 'H', 'E', 'E', 'S'], 
+                        ['H', 'D', 'B', 'R', 'A'], 
+                        ['N', 'G', 'K', 'G', 'U']]
+
+            
+            
+            import pdb
+            pdb.set_trace()
+            print("HERE HERE")
