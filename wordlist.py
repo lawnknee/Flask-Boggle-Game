@@ -27,7 +27,16 @@ class WordList:
         return words
 
     def check_word(self, word):
-        """Is word in word list?"""
+        """Is word in word list?
+        
+            >>> wl = WordList("dictionary.txt")
+            >>> wl.check_word("ABACUS")
+            True
+
+            >>> wl.check_word("AAM")
+            False
+        
+        """
 
         return word in self.words
 
