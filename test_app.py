@@ -32,34 +32,55 @@ class BoggleAppTestCase(TestCase):
         """Test starting a new game."""
 
         with self.client as client:
-            ...
-            # write a test for this route
-            response = client.get("/api/new-game")
-            json = response.json
+            response = client.post("/api/new-game")
+            game = response.json
 
 
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.content_type, "application/json")
-            self.assertIsInstance(json["board"], list)
-            self.assertIsInstance(json["gameId"], str)
-            self.assertTrue(games)
+            self.assertIsInstance(game["board"], list)
+            self.assertIsInstance(game["gameId"], str)
+            self.assertIn(game["gameId"], games)
 
     def test_api_score_word(self):
         """Testing verifying a word"""
 
         with self.client as client:
-            response = client.get("/api/new-game")
+            response = client.post("/api/new-game")
             game_id = response.json["gameId"]
             game = games[game_id] # instance of the BoggleGame
 
-            game.board = [['L', 'T', 'E', 'F', 'U'], 
-                        ['L', 'O', 'I', 'T', 'H'], 
-                        ['R', 'H', 'E', 'E', 'S'], 
-                        ['H', 'D', 'B', 'R', 'A'], 
-                        ['N', 'G', 'K', 'G', 'U']]
+            game.board = [['X', 'X', 'X', 'X', 'X'], 
+                          ['L', 'O', 'I', 'T', 'X'], 
+                          ['X', 'X', 'X', 'E', 'X'], 
+                          ['X', 'X', 'X', 'R', 'X'], 
+                          ['X', 'X', 'X', 'X', 'X']]
 
+            # Verifies that a word is not in the dictionary.
+            not_on_list = client.post("/api/score-word",
+                            json = {
+                                'gameId': game_id, 
+                                "word": 'AAZ'
+                                })
             
+            self.assertEqual(not_on_list.json["result"], "not-word")
+
+            # Verifies that a word is in the dictionary but not
+            # on the board
+            not_on_board = client.post("/api/score-word",
+                            json = {
+                                'gameId': game_id, 
+                                "word": 'KING'
+                                })
             
-            import pdb
-            pdb.set_trace()
-            print("HERE HERE")
+            self.assertEqual(not_on_board.json["result"], "not-on-board")
+
+            # Verifies that a word is in the dictionary and on the board
+            valid_word = client.post("/api/score-word",
+                            json = {
+                                'gameId': game_id, 
+                                "word": 'LOITER'
+                                })
+
+            self.assertEqual(valid_word.json["result"], "ok")
+            

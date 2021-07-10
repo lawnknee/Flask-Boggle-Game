@@ -17,7 +17,7 @@ def homepage():
     return render_template("index.html")
 
 
-@app.route("/api/new-game")
+@app.route("/api/new-game", methods=["POST"])
 def new_game():
     """Start a new game and return JSON: {game_id, board}."""
 
@@ -30,6 +30,11 @@ def new_game():
 
 @app.route("/api/score-word", methods=["POST"])
 def score_word():
+    """
+    Accepts JSON {gameId, word} verifies if word is valid 
+    and returns JSON {result}
+    """
+
     word = request.json["word"]
     game_id = request.json["gameId"]
     game = games[game_id]
