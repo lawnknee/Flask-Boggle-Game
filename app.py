@@ -34,7 +34,7 @@ def score_word():
     Accepts JSON {gameId, word} verifies if word is valid 
     and returns JSON {result}
     """
-
+    
     word = request.json["word"]
     game_id = request.json["gameId"]
     game = games[game_id]

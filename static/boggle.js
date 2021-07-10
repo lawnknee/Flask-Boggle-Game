@@ -16,6 +16,7 @@ async function start() {
   gameId = response.data.gameId;
   let board = response.data.board;
 
+  console.log(response)
   displayBoard(board);
 }
 
@@ -39,16 +40,14 @@ function displayBoard(board) {
 }
 
 // need conductor function
-$form.on("submit", checkWord);
+$form.on("submit", handleSubmit);
 
 
 // data
-async function checkWord() {
-  let word = $wordInput.val().toUpperCase();
-  debugger;
-  let response = await axios.post("/api/score-word", { data: {gameId: gameId, word: word }});
-  debugger;
-  return response.data
+async function checkWord(word) {
+  let response = await axios.post("/api/score-word", { gameId: gameId, word: word });
+
+  console.log(response.data)
 }
 
 // UI
@@ -58,9 +57,11 @@ function displayResult(result) {
 
 
 // conductor
-async function handleSubmit() {
-  let response = await checkWord();
-  displayResult(result);
+async function handleSubmit(evt) {
+  evt.preventDefault()
+  let word = $wordInput.val().toUpperCase();
+  let response = await checkWord(word);
+  // displayResult(result);
 }
 
 start();
